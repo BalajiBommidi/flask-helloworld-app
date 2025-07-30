@@ -1,0 +1,26 @@
+trigger:
+- main
+pool:
+  name: Default
+variables:
+  dockerHubUsername: 'balaji4111'
+  imageName: 'flask-helloworld-app'
+  dockerImageTag: 'latest'
+stages:
+- stage: BuildAndPush
+  displayName: 'Build and Push Docker Image'
+  jobs:
+  - job: Build
+    steps:
+    - task: Docker@2
+      inputs:
+        command: 'login'
+        containerRegistry: 'dockerhub-connection' # Docker Hub service connection name in Azure DevOps
+
+    - task: Docker@2
+      inputs:
+        command: 'buildAndPush'
+        repository: '$(dockerHubUsername)/$(imageName)'
+        Dockerfile: '**/Dockerfile'
+        tags: |
+          $(dockerImageTag)
